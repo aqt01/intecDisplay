@@ -37,7 +37,14 @@ INSTALLED_APPS = (
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'intecDisplay',
+    'easy_thumbnails',
+    'south',
+  
 )
+
+SOUTH_MIGRATION_MODULES = {
+	'easy_thumbnails': 'easy_thumbnails.south_migrations',
+	}
 
 MIDDLEWARE_CLASSES = (
     'django.contrib.sessions.middleware.SessionMiddleware',

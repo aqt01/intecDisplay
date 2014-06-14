@@ -3,24 +3,23 @@ from django.contrib.contenttypes import generic
 from django.db.models import Q
 import os
 
-class PyMonitor(models.Model):
 
-	location = models.TextField('Ubicacion', null=True , blank=True)
-	ip =  models.TextField('ip', null=True , blank=True)
-	#Cambiar ip por nombrededominio que refiera al pasillo
-        description = models.TextField("Descripcion del raspberry pi", max_length=200, null=True, blank=True)
+class Location(models.Model):
+	building = models.CharField('Edificio',max_length=100, null=True , blank=True)
+	corridor = models.CharField('Aulas',max_length=150, null=True , blank=True)
 
-
-	category = models.ForeignKey("Content")
+	def __unicode__(self):
+		return self.building
 
 
-class Content(models.Model):
-
+class ContentCategory(models.Model):
 	CATEGORY_OPTIONS = (
-            (1, 'Anuncios-Mensajes'),
+            (1, 'Anuncios/Mensajes'),
             (2, 'Eventos'),
             (3, 'Avisos'),
+            (4, 'Eventos co-curriculares'),
             )
+
 	CATEGORY_OPTIONS_DICT = dict(CATEGORY_OPTIONS)
 	category = models.IntegerField("Categoria",primary_key=True, max_length=2, choices=CATEGORY_OPTIONS, blank=True)
 
@@ -33,14 +32,40 @@ class Content(models.Model):
         	return options
 
 	description = models.TextField("Descripcion del contenido", max_length=200, null=True, blank=True)
-
+	
 	def save(self, *args, **kwargs):
 		filename = self.category_str()
 		print self.category_str()
 		print filename[self.category-1]
-		directory = './intecDisplay_Contenido/' + str(filename[self.category-1])
+		directory = './intecDisplay_contenido/' + str(filename[self.category-1])
 		
 		if not os.path.exists(directory): os.makedirs(directory)
- 		super(Content, self).save(*args, **kwargs)
+ 		super(ContentCategory, self).save(*args, **kwargs)
+
+ 	def delete_model(self, *args, **kwargs):
+		print filename[self.category-1]
+		directory = './intecDisplay_contenido/' + str(filename[self.category-1])
+		
+		if os.path.exists(directory): os.remove(directory)
+ 		super(ContentCategory, self).delete(*args, **kwargs)
+
+ 	def __unicode__(self):
+		return self.CATEGORY_OPTIONS_DICT[self.category]
+
+class Content(models.Model):
+	contentCategory = models.ManyToManyField(ContentCategory)
+	photo = models.ImageField(upload_to='Content')
+
+class PyMonitor(models.Model):
+
+	location = models.ForeignKey(Location)
+	ip =  models.CharField('ip', max_length=16,null=True , blank=True)
+	#Cambiar ip por nombrededominio que refiera al pasillo
+	description = models.TextField("Descripcion del raspberry pi", max_length=200, null=True, blank=True)
+	category = models.ManyToManyField("ContentCategory")
+
+	def __unicode__(self):
+		return self.ip
+
 
 # Create your models here.
