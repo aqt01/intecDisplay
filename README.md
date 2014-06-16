@@ -1,10 +1,14 @@
 intecDisplay
 ============
 
-INSTALL
+Instalacion 
+
+
+
 
 Crear carpetas e instalar ambiente
 
+0.- sudo apt-get install python-pip
 1.- mkdir ~/apps
 2.- cd ~/apps/
 3.- git clone https://github.com/aqt01/intecDisplay.git
