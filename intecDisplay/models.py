@@ -13,44 +13,41 @@ class Location(models.Model):
 
 
 class ContentCategory(models.Model):
-	CATEGORY_OPTIONS = (
-            (1, 'Anuncios/Mensajes'),
-            (2, 'Eventos'),
-            (3, 'Avisos'),
-            (4, 'Eventos co-curriculares'),
-            )
+#	CATEGORY_OPTIONS = (
+#        	(1, 'Anuncios/Mensajes'),
+#       	(2, 'Eventos'),
+#           	(3, 'Avisos'),
+#            	(4, 'Eventos co-curriculares'),
+#            	)
 
-	CATEGORY_OPTIONS_DICT = dict(CATEGORY_OPTIONS)
-	category = models.IntegerField("Categoria",primary_key=True, max_length=2, choices=CATEGORY_OPTIONS, blank=True)
+#	CATEGORY_OPTIONS_DICT = dict(CATEGORY_OPTIONS)
+#	category = models.IntegerField("Categoria",primary_key=True, max_length=2, choices=CATEGORY_OPTIONS, blank=True)
+	category = models.CharField("Categoria",primary_key=True, max_length=100 )
 
-    	def category_str(self):
-        	options = []
-        	if self.category:
-            		for bit, option in self.CATEGORY_OPTIONS:
-                		if bit & self.category:
-		                    options.append(option)
-        	return options
+#    	def category_str(self):
+#        	options = []
+#        	if self.category:
+#            		for bit, option in self.CATEGORY_OPTIONS:
+#                		if bit & self.category:
+#		                    options.append(option)
+#        	return options
 
 	description = models.TextField("Descripcion del contenido", max_length=200, null=True, blank=True)
 	
 	def save(self, *args, **kwargs):
-		filename = self.category_str()
-		print self.category_str()
-		print filename[self.category-1]
-		directory = './intecDisplay_contenido/' + str(filename[self.category-1])
-		
+		directory = './intecDisplay_contenido/' + self.category
+		print directory
 		if not os.path.exists(directory): os.makedirs(directory)
  		super(ContentCategory, self).save(*args, **kwargs)
 
- 	def delete_model(self, *args, **kwargs):
-		print filename[self.category-1]
-		directory = './intecDisplay_contenido/' + str(filename[self.category-1])
-		
-		if os.path.exists(directory): os.remove(directory)
+ 	def delete(self, *args, **kwargs):
+		directory = './intecDisplay_contenido/' + self.category
+		print directory
+		os.removedirs(directory)
  		super(ContentCategory, self).delete(*args, **kwargs)
 
  	def __unicode__(self):
-		return self.CATEGORY_OPTIONS_DICT[self.category]
+		return self.category
 
 class Content(models.Model):
 	contentCategory = models.ManyToManyField(ContentCategory)
