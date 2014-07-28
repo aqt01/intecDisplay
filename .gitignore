@@ -1,4 +1,6 @@
+credentials.txt
 *.pyc
 *.sqlite3
 *.jpg
 *.png
+*.*.swp

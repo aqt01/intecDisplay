@@ -2,11 +2,11 @@
 # Expect script to supply root/admin password for remote ssh server 
 # and execute command.
 # This script needs three argument to(s) connect to remote server:
-# password = Password of remote UNIX server, for root user.
-# ipaddr = IP Addreess of remote UNIX server, no hostname
-# scriptname = Path to remote script which will execute on remote server
+# user = Username of remote unix server
+# password = Password of remote UNIX server, for determined user above
+# ipaddr = IP Address of remote UNIX server, no hostname
 # For example:
-#  ./sshlogin.exp password 192.168.1.11 who 
+#  ./sshlogin.exp user password 192.168.1.11
 # ------------------------------------------------------------------------
 # Copyright (c) 2004 nixCraft project <http://cyberciti.biz/fb/>
 # This script is licensed under GNU GPL version 2.0 or above
@@ -32,9 +32,8 @@ expect "yes/no" {
     } "*?assword" { send "[lindex $password]\r" }
 # Send password aka $password 
 #send -- "$password\r"
-
-expect "# " { send "touch ya.txt\r" }
-expect ": " { send "touch ya.txt\r" }
+expect "#"
+#expect ": " { send "touch ya.txt\r" }
 send -- "bash ./update.sh\r"
 #send "bash ./update.sh\r"
 # send blank line (\r) to make sure we get back to gui

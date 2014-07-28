@@ -4,3 +4,4 @@ distribute==0.6.24
 wsgiref==0.1.2
 south
 easy_thumbnails
+-e git+https://github.com/danielroseman/django-initd#egg=django_initd-dev
